@@ -1,0 +1,18 @@
+<launch>
+    <arg name="model_file" default="$(find face_recognition_facenet)/data/model/20180408-102900.pb"/>
+    <arg name="classifier_file" default="$(find face_recognition_facenet)/data/classifier/classifier.pkl"/>
+    <arg name="image_topic" default="/camera/rgb/image_rect_color"/>
+    <arg name="points_topic" default="/camera/depth_registered/points"/>
+    <arg name="use_debug_screen" default="false" />
+
+    <node name="face_recognition_facenet" type="node.py" pkg="face_recognition_facenet" output="screen">
+      <param name="model_file" value="$(arg model_file)"/>
+      <param name="classifier_file" value="$(arg classifier_file)"/>
+      <remap from="image_raw" to="$(arg image_topic)"/>
+      <remap from="points" to="$(arg points_topic)"/>
+    </node>
+
+    <node name="result_image_view" type="image_view" pkg="image_view" output="screen" if="$(arg use_debug_screen)">
+      <remap from="image" to="result_image" />
+    </node>
+</launch>
