@@ -7,7 +7,7 @@ import cv2
 import math
 from sensor_msgs.msg import Image, PointCloud2
 from geometry_msgs.msg import PointStamped
-from face_recognition_facenet.msg import RecognizedResult
+from facenet_ros.msg import RecognizedResult
 from cv_bridge import CvBridge, CvBridgeError
 import message_filters
 
