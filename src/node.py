@@ -7,7 +7,7 @@ import cv2
 import math
 from sensor_msgs.msg import Image, PointCloud2
 from geometry_msgs.msg import PointStamped
-from face_recognition_facenet.msg import RecognizedResult
+from facenet_ros.msg import RecognizedResult
 from cv_bridge import CvBridge, CvBridgeError
 import message_filters
 
@@ -32,7 +32,7 @@ class FaceRecognitionFacenet:
     def __init__(self):
         np.random.seed(seed=777)
 
-        gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.5)
+        gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.8)
         self.sess = tf.Session(config=tf.ConfigProto(gpu_options=gpu_options, log_device_placement=False))
         self.pnet, self.rnet, self.onet = facenet.align.detect_face.create_mtcnn(self.sess, None)
         try:
@@ -174,6 +174,6 @@ class FaceRecognitionFacenet:
 
 
 if __name__ == '__main__':
-    rospy.init_node("face_recognition_facenet", anonymous=False)
+    rospy.init_node("facenet_ros", anonymous=False)
     m = FaceRecognitionFacenet()
     rospy.spin()
