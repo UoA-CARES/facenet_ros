@@ -32,7 +32,7 @@ class FaceRecognitionFacenet:
     def __init__(self):
         np.random.seed(seed=777)
 
-        gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.8)
+        gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.4)
         self.sess = tf.Session(config=tf.ConfigProto(gpu_options=gpu_options, log_device_placement=False))
         self.pnet, self.rnet, self.onet = facenet.align.detect_face.create_mtcnn(self.sess, None)
         try:
