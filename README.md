@@ -8,9 +8,12 @@ OpenCV, TensorFlow, etc.
 
         $ sudo pip install -r requirement.txt
 
+Package that handles images E.g 
+http://wiki.ros.org/cv_camera
+
 ## Install
 
-        $ git clone https://stash.auckland.ac.nz/scm/~bahn915/face_recognition_facenet.git
+        $ git https://github.com/UoA-CARES/facenet_ros
         $ catkin_make or catkin build
 
 ## Usage
@@ -18,6 +21,9 @@ OpenCV, TensorFlow, etc.
 ### Take image for registration
 
 First you should make dataset directory any you want. For example, ~/dataset.
+Image topic name for cv_camera /cv_camera/image_raw
+Node that the image handling node needs to be running as well
+For cv_camera this is $ rosrun cv_camera cv_camera_node
 
         $ rosrun face_recognition_facenet take_image.py --image <rgb_image_topic_name> --destination ~/dataset/<Class Name>
 
@@ -25,13 +31,16 @@ First you should make dataset directory any you want. For example, ~/dataset.
 
 ### Train classification
 
-        $ rosrun face_recognition_facenet train.py --dataset_path <dataset_directory> --model model/20170512-110547.pb --output_classifier <classification_file>
+        $ rosrun face_recognition_facenet train.py --dataset_path <dataset_directory> --model model/<Model-File> --output_classifier model/<classification_file>
 
 ### Run with camera
 
-This package needs pointcloud and rgb image.
+This package needs now only runs with an image and does not determinate face position
+Image topic name for cv_camera /cv_camera/image_raw
+Node that the image handling node needs to be running as well
+For cv_camera this is $ rosrun cv_camera cv_camera_node
 
-        $ rosrun face_recognition_facenet node.py \_model_file:=./data/model/20170512-110547.pb \_classifier_file:=<classification_file> image_raw:=<rgb_image_topic_name>
+        $ rosrun face_recognition_facenet node.py \_model_file:=<path_to_model_file> \_classifier_file:=<path_to_classification_file> image_raw:=<rgb_image_topic_name>
 
 
 [facenet]: https://github.com/davidsandberg/facenet

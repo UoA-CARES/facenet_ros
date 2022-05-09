@@ -12,6 +12,7 @@ from sensor_msgs.msg import Image
 from cv_bridge import CvBridge, CvBridgeError
 import facenet.align.detect_face
 
+
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 minsize = 50  # minimum size of face
 threshold = [0.6, 0.7, 0.7]  # three steps's threshold
@@ -29,8 +30,8 @@ class TakeImage:
             os.mkdir(self.destination_path)
 
         np.random.seed(seed=777)
-        gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.9)
-        self.sess = tf.Session(config=tf.ConfigProto(gpu_options=gpu_options, log_device_placement=False))
+        gpu_options = tf.compat.v1.GPUOptions(per_process_gpu_memory_fraction=0.9)
+        self.sess = tf.compat.v1.Session(config=tf.compat.v1.ConfigProto(gpu_options=gpu_options, log_device_placement=False))
         self.pnet, self.rnet, self.onet = facenet.align.detect_face.create_mtcnn(self.sess, None)
 
         self.bridge = CvBridge()

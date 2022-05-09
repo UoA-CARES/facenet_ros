@@ -13,13 +13,15 @@ import message_filters
 
 import facenet.align.detect_face
 import facenet.facenet as fn
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 import numpy as np
 import pickle
 from sklearn.svm import SVC
-from scipy import misc
+
 import itertools
 import sensor_msgs.point_cloud2 as pc2
+from skimage.transform import resize
+from skimage import data
 
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
@@ -60,16 +62,13 @@ class FaceRecognitionFacenet:
         self.embedding_size = self.embeddings.get_shape()[1]
 
         self.bridge = CvBridge()
-        rgb_sub = message_filters.Subscriber('image_raw', Image)
-        points_sub = message_filters.Subscriber('points', PointCloud2)
-        ts = message_filters.ApproximateTimeSynchronizer([rgb_sub, points_sub], 10, 0.5, allow_headerless=True)
-        ts.registerCallback(self.callback_image)
+        rgb_sub = rospy.Subscriber('image_raw', Image, self.callback_image)
 
         self.pub_debug_image = rospy.Publisher('result_image', Image, queue_size=10)
         self.pub_result = rospy.Publisher('recognized_faces', RecognizedResult, queue_size=10)
         rospy.loginfo('initialized...')
 
-    def callback_image(self, img, points):
+    def callback_image(self, img):
         try:
             cv_image = self.bridge.imgmsg_to_cv2(img, "bgr8")
         except CvBridgeError as e:
@@ -99,7 +98,7 @@ class FaceRecognitionFacenet:
 
             img_list = [None] * nrof_faces
             aligned = None
-            for i in xrange(nrof_faces):
+            for i in range(nrof_faces):
                 det = np.squeeze(bounding_boxes[i, 0:4])
                 bb = np.zeros(4, dtype=np.int32)
 
@@ -109,7 +108,7 @@ class FaceRecognitionFacenet:
                 bb[3] = np.minimum(det[3] + 44 / 2, img_size[0])
 
                 cropped = cv_image[bb[1]:bb[3], bb[0]:bb[2], :]
-                aligned = misc.imresize(cropped, (160, 160), interp='bilinear')
+                aligned = resize(cropped, (160, 160))
                 prewhitened = fn.prewhiten(aligned)
                 img_list[i] = prewhitened
 
@@ -147,22 +146,6 @@ class FaceRecognitionFacenet:
                     for x in range(x1, x2):
                         req_pt.append([x, y])
 
-                depth_point = pc2.read_points(points, skip_nans=False, field_names=('x', 'y', 'z'), uvs=req_pt)
-
-                pp = np.empty((0, 3))
-                for p in depth_point:
-                    if not math.isnan(p[0]):
-                        pp = np.append(pp, [[p[0], p[1], p[2]]], axis=0)
-
-                pos = np.mean(pp, axis=0)
-                ps1 = PointStamped()
-                ps1.header.stamp = rospy.Time.now()
-                ps1.header.frame_id = points.header.frame_id
-                ps1.point.x = pos[0]
-                ps1.point.y = pos[1]
-                ps1.point.z = pos[2]
-
-                result_msg.position.append(ps1)
                 index += 1
 
             self.pub_result.publish(result_msg)

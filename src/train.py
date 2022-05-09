@@ -8,7 +8,7 @@ import argparse
 import numpy as np
 import facenet.align.detect_face
 import facenet.facenet as fn
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 import math
 from sklearn.svm import SVC
 import pickle
