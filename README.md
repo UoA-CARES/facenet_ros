@@ -1,4 +1,4 @@
-# face_recognition_facenet
+# facenet_ros
 
 This package is for face detecting and recognition using [facenet] in ROS. The code is heavily inspired by the [davidsandbergfacenet]
 
@@ -28,13 +28,13 @@ Image topic name for cv_camera /cv_camera/image_raw
 
 Node that the image handling node needs to be running as well. For cv_camera this is $ rosrun cv_camera cv_camera_node
 
-        $ rosrun face_recognition_facenet take_image.py --image <rgb_image_topic_name> --destination ~/dataset/<Class Name>
+        $ rosrun facenet_ros take_image.py --image <rgb_image_topic_name> --destination ~/dataset/<Class Name>
 
 <Class Name> is registered name, for example, John_Dow. After launch take_image node, look at the camera then the images are saved for every 1 second.
 
 ### Train classification
 
-        $ rosrun face_recognition_facenet train.py --dataset_path <dataset_directory> --model model/<Model-File> --output_classifier model/<classification_file>
+        $ rosrun facenet_ros train.py --dataset_path <dataset_directory> --model model/<Model-File> --output_classifier model/<classification_file>
 
 ### Run with camera
 
@@ -44,7 +44,7 @@ Image topic name for cv_camera /cv_camera/image_raw
 
 Node that the image handling node needs to be running as well. For cv_camera this is $ rosrun cv_camera cv_camera_node
 
-        $ rosrun face_recognition_facenet node.py \_model_file:=<path_to_model_file> \_classifier_file:=<path_to_classification_file> image_raw:=<rgb_image_topic_name>
+        $ rosrun facenet_ros node.py \_model_file:=<path_to_model_file> \_classifier_file:=<path_to_classification_file> image_raw:=<rgb_image_topic_name>
 
 
 [facenet]: https://github.com/davidsandberg/facenet
