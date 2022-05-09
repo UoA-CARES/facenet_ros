@@ -15,7 +15,7 @@ http://wiki.ros.org/cv_camera
 
 Please note that all files in /data may need to be downloaded individually from github. This is due to the way github handles files. If the files are in ~kb then they have not been downloaded properly.
 
-        $ git https://github.com/UoA-CARES/facenet_ros
+        $ git clone https://github.com/UoA-CARES/facenet_ros
         $ catkin_make or catkin build
 
 ## Usage
